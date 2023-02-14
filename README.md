@@ -1,2 +1,2 @@
 # Homework-FourthSemester
-Fourth semester SPbU F# home assignments.
+Home assignments for the programming course at SPbU, 4th semester.
