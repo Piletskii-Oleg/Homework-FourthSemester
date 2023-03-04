@@ -1,10 +1,12 @@
 ﻿let power_series n m =
-    let rec power_two acc power =
-        if power = n then acc
-        else if power > n then power_two (acc / 2L) (power - 1)
-        else power_two (acc * acc) (power + power)
-    let rec create_list acc element i =
-        if i = m + 1 then acc
-        else create_list (element :: acc) (element * 2L) (i + 1)
-    List.rev (create_list [] (power_two 2L 1) 0)
+    let rec power_two power acc =
+        match power with
+        | _ when power = n -> acc
+        | _ when power > n -> power_two (power - 1) (acc / 2L)
+        | _ -> power_two (power + power) (acc * acc)
+    let rec create_list element i acc =
+        match i with
+        | _ when i = m + 1 -> acc
+        | _ -> create_list (element * 2L) (i + 1) (element :: acc)
+    List.rev (create_list (power_two 1 2L) 0 [])
 printfn $"%A{power_series 2 4}"
