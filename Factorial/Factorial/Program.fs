@@ -1,5 +1,7 @@
 ﻿let factorial x =
-    let rec innerFactorial acc i =
-        if i = x + 1 then acc
-        else innerFactorial (acc * i) (i + 1)
-    innerFactorial 1 1
+    let rec loop i acc =
+        match i with
+        | 0 | 1 -> acc
+        | _ -> loop (i - 1) (acc * i)
+    loop x 1
+printfn $"%d{match_factorial 5}"
