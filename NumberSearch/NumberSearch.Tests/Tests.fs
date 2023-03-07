@@ -13,7 +13,7 @@ let ``Search in empty array should return -1`` () =
 let ``Search should work correctly on int list`` () =
     find_element 2 [2; 5; 0] |> should equal 0
     find_element 5 [2; 5; 0] |> should equal 1
-    find_element 0 [2;5;0] |> should equal 2
+    find_element 0 [2; 5; 0] |> should equal 2
     
 [<Test>]
 let ``Search should work correctly on string list`` () =
