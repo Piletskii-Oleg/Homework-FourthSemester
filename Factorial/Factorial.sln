@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Factorial", "Factorial\Factorial.fsproj", "{116582F0-11AE-497C-B234-DEAF60960FEC}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Factorial.Tests", "Factorial.Tests\Factorial.Tests.fsproj", "{FDC964BF-700E-4627-BAF0-2C56C858E820}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{116582F0-11AE-497C-B234-DEAF60960FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{116582F0-11AE-497C-B234-DEAF60960FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{116582F0-11AE-497C-B234-DEAF60960FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDC964BF-700E-4627-BAF0-2C56C858E820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDC964BF-700E-4627-BAF0-2C56C858E820}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDC964BF-700E-4627-BAF0-2C56C858E820}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDC964BF-700E-4627-BAF0-2C56C858E820}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

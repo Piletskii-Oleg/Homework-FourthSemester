@@ -1,7 +1,9 @@
-﻿let factorial x =
+﻿module Factorial
+
+let factorial x =
     let rec loop i acc =
         match i with
-        | 0 | 1 -> acc
-        | _ -> loop (i - 1) (acc * i)
+        | 0L | 1L -> acc
+        | _ -> loop (i - 1L) (acc * i)
     loop x 1
-printfn $"%d{match_factorial 5}"
+printfn $"%d{factorial 5L}"
