@@ -1,10 +1,6 @@
 name: build-number-search
 
-on: 
-  push:
-    paths:
-      - '**.fs'
-      - '**.fsproj'
+on: [push]
 
 env:
   DOTNET_VERSION: '7.x'
