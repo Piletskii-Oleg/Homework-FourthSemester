@@ -1,4 +1,4 @@
-name: build-${{matrix.project_name}}
+name: build-number-search
 
 on: [push]
 
