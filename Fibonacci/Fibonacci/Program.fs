@@ -1,4 +1,6 @@
-﻿let rec fibonacci n =
+﻿module Fibonacci
+
+let rec fibonacci n =
     let rec fibAdditional twoBack oneBack i =
         match i with
         | _ when i = n -> twoBack
