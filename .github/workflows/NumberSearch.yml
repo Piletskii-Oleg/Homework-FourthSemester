@@ -1,0 +1,36 @@
+name: build-${{matrix.project_name}}
+
+on: 
+  push:
+    paths:
+      - '**.fs'
+      - '**.fsproj'
+
+env:
+  DOTNET_VERSION: '7.x'
+
+jobs:
+  build:
+
+    name: build-${{matrix.os}}-${{project_name}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        project_name: ['NumberSearch']
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: nuget restore "${{ matrix.project_name }}"
+
+    - name: Build
+      run: dotnet build "${{ matrix.project_name }}"
+
+    - name: Tests
+      run: dotnet test "${{matrix.project_name}}/${{matrix.project_name}}.Tests"
