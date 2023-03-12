@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EvenNumbers", "EvenNumbers\EvenNumbers.fsproj", "{9A121E16-54D7-46AA-AF2A-2E85B27C8E25}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EvenNumbers.Tests", "EvenNumbers.Tests\EvenNumbers.Tests.fsproj", "{18075944-D968-4EBF-B49A-687D8894195A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A121E16-54D7-46AA-AF2A-2E85B27C8E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A121E16-54D7-46AA-AF2A-2E85B27C8E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A121E16-54D7-46AA-AF2A-2E85B27C8E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A121E16-54D7-46AA-AF2A-2E85B27C8E25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18075944-D968-4EBF-B49A-687D8894195A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18075944-D968-4EBF-B49A-687D8894195A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18075944-D968-4EBF-B49A-687D8894195A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18075944-D968-4EBF-B49A-687D8894195A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
