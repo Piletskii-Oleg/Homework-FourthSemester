@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TreeMap", "TreeMap\TreeMap.fsproj", "{DB469709-32CE-4F41-A6AA-80570458E5EC}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TreeMap.Tests", "TreeMap.Tests\TreeMap.Tests.fsproj", "{8034E722-50D3-476B-9A4F-9A7F11E7E2E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB469709-32CE-4F41-A6AA-80570458E5EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB469709-32CE-4F41-A6AA-80570458E5EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB469709-32CE-4F41-A6AA-80570458E5EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB469709-32CE-4F41-A6AA-80570458E5EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8034E722-50D3-476B-9A4F-9A7F11E7E2E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8034E722-50D3-476B-9A4F-9A7F11E7E2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8034E722-50D3-476B-9A4F-9A7F11E7E2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8034E722-50D3-476B-9A4F-9A7F11E7E2E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
