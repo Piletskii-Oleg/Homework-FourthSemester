@@ -6,19 +6,19 @@ type PhoneRecord =
     { Phone: string;
       Name: string }
     
-let addRecord phoneBook value : PhoneRecord list =
+let addRecord value phoneBook : PhoneRecord list =
     value :: phoneBook
    
-let parseFile (stream: Stream) =
-    use reader = new StreamReader(stream)
+let parseFile (path: string) =
+    use reader = new StreamReader(path)
     let wholeString = reader.ReadToEnd()
     
     wholeString.Split "\n"
     |> Seq.map (fun (string: string) -> string.Split())
-    |> Seq.map (fun [|phone; name|] -> {Phone = phone; Name = name})
+    |> Seq.map (fun element -> {Name = element[0]; Phone = element[1]})
     |> Seq.toList
     
-let findByName phoneBook value =
+let findByName value phoneBook=
     let rec iterate listCopy =
         match listCopy with
         | [] -> "not found"
@@ -28,7 +28,7 @@ let findByName phoneBook value =
             | _ -> iterate tail
     iterate phoneBook
     
-let findByPhone phoneBook value =
+let findByPhone value phoneBook =
     let rec iterate listCopy =
         match listCopy with
         | [] -> "not found"
@@ -38,15 +38,13 @@ let findByPhone phoneBook value =
             | _ -> iterate tail
     iterate phoneBook
     
-let rec print phoneBook =
-    match phoneBook with
-    | [] -> printfn ""
-    | head :: tail -> printfn $"%s{head.Name} - %s{head.Phone}"; print tail
+let getPhoneBookString phoneBook =
+    let rec getPhoneBookLine phoneBookString phoneBookTail = 
+        match phoneBookTail with
+        | [] -> phoneBookString
+        | head :: tail -> getPhoneBookLine (phoneBookString + $"%s{head.Name} %s{head.Phone}\n") tail
+    getPhoneBookLine "" phoneBook
     
-let saveToFile phoneBook (path: string) =
+let saveToFile (path: string) phoneBook =
     use writer = new StreamWriter(path)
-    let rec writeLine list =
-        match list with
-        | [] -> writer.Close
-        | head :: tail -> writer.WriteLine $"%s{head.Name} %s{head.Phone}"; writeLine tail
-    writeLine phoneBook
+    phoneBook |> getPhoneBookString |> writer.Write
