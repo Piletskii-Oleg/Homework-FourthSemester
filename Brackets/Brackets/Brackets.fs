@@ -24,32 +24,27 @@ let filterElement element =
     | Other _ -> false
     | _ -> true
 
-let parse : string -> List<Symbol> =
+let parse: string -> List<Symbol> =
     Seq.toList >> List.map transformElement >> List.filter filterElement
 
-let check sequence =
-    let rec check_elements stack seq =
-        match seq with
-        | [] when stack <> [] -> false
-        | [] -> true
-        | _ -> 
-            match List.head seq with
-            | OpeningCurly | OpeningParentheses | OpeningSquare ->
-                check_elements (Stack.push (Seq.head seq) stack) (List.tail seq)
-            | ClosingCurly ->
-                match Stack.peek stack with
-                | None -> false
-                | Some OpeningCurly -> check_elements (Stack.remove stack) (List.tail seq)
-                | _ -> false
-            | ClosingParentheses ->
-                match Stack.peek stack with
-                | None -> false
-                | Some OpeningParentheses -> check_elements (Stack.remove stack) (List.tail seq)
-                | _ -> false
-            | ClosingSquare ->
-                match Stack.peek stack with
-                | None -> false
-                | Some OpeningSquare -> check_elements (Stack.remove stack) (List.tail seq)
-                | _ -> false
-            | Other _ -> false
-    sequence |> parse |> check_elements []
+let rec checkElements stack seq =
+    let matchBracket symbol stack seq func =
+        match Stack.peek stack with
+        | None -> false
+        | Some bracket when symbol = bracket -> func (Stack.remove stack) (List.tail seq)
+        | _ -> false
+
+    match seq with
+    | [] when stack <> [] -> false
+    | [] -> true
+    | _ ->
+        match List.head seq with
+        | OpeningCurly
+        | OpeningParentheses
+        | OpeningSquare -> checkElements (Stack.push (Seq.head seq) stack) (List.tail seq)
+        | ClosingCurly -> matchBracket OpeningCurly stack seq checkElements
+        | ClosingParentheses -> matchBracket OpeningParentheses stack seq checkElements
+        | ClosingSquare -> matchBracket OpeningSquare stack seq checkElements
+        | Other _ -> false
+
+let check sequence = sequence |> parse |> checkElements []

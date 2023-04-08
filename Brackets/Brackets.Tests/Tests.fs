@@ -10,16 +10,12 @@ let assertIs (boolean: bool) list =
 
 [<Test>]
 let ``Correct bracket sequences should return true`` () =
-    ["[(())]"; "{}(())[[]]"; "{{((([[[]]])))}}"]
-    |> assertIs true
-    
+    [ "[(())]"; "{}(())[[]]"; "{{((([[[]]])))}}" ] |> assertIs true
+
 [<Test>]
 let ``Strings that contain symbols other than brackets but have correct bracket combinations should return true`` () =
-    ["(wewWEo[qwe]lkq23q238)"; "(jej[[E[W]lll]002-]{--==++})"]
-    |> assertIs true
-    
+    [ "(wewWEo[qwe]lkq23q238)"; "(jej[[E[W]lll]002-]{--==++})" ] |> assertIs true
+
 [<Test>]
 let ``Incorrect bracket combinations should return false`` () =
-    ["(((0))]["; "[[]"; "{{{{{{{{"; "}}}"; "{2}{})"]
-    |> assertIs false
-    
+    [ "(((0))]["; "[[]"; "{{{{{{{{"; "}}}"; "{2}{})" ] |> assertIs false
