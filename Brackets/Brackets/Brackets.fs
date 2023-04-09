@@ -1,5 +1,7 @@
 ﻿module Brackets
 
+open Stack
+
 type Symbol =
     | OpeningSquare
     | ClosingSquare
@@ -27,24 +29,28 @@ let filterElement element =
 let parse: string -> List<Symbol> =
     Seq.toList >> List.map transformElement >> List.filter filterElement
 
+let matchBracket symbol bracket func =
+    match bracket with
+    | None -> false
+    | Some value when symbol = value -> func
+    | _ -> false
+
 let rec checkElements stack seq =
-    let matchBracket symbol stack seq func =
-        match Stack.peek stack with
-        | None -> false
-        | Some bracket when symbol = bracket -> func (Stack.remove stack) (List.tail seq)
-        | _ -> false
+    let checkNext stack seq =
+        checkElements (pop stack) (List.tail seq)
 
     match seq with
-    | [] when stack <> [] -> false
+    | [] when stack <> Stack [] -> false
     | [] -> true
     | _ ->
         match List.head seq with
         | OpeningCurly
         | OpeningParentheses
-        | OpeningSquare -> checkElements (Stack.push (Seq.head seq) stack) (List.tail seq)
-        | ClosingCurly -> matchBracket OpeningCurly stack seq checkElements
-        | ClosingParentheses -> matchBracket OpeningParentheses stack seq checkElements
-        | ClosingSquare -> matchBracket OpeningSquare stack seq checkElements
+        | OpeningSquare -> checkElements (push (Seq.head seq) stack) (List.tail seq)
+        | ClosingCurly -> matchBracket OpeningCurly (peek stack) (checkNext stack seq)
+        | ClosingParentheses -> matchBracket OpeningParentheses (peek stack) (checkNext stack seq)
+        | ClosingSquare -> matchBracket OpeningSquare (peek stack) (checkNext stack seq)
         | Other _ -> false
 
-let check sequence = sequence |> parse |> checkElements []
+let check sequence =
+    sequence |> parse |> checkElements (Stack [])

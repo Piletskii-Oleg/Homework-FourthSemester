@@ -1,13 +1,18 @@
 ﻿module Stack
 
-let push element stack =
-    match stack with
-    | [] -> [ element ]
-    | _ -> element :: stack
+type Stack<'a> = Stack of List<'a>
 
-let remove stack = List.tail stack
+let push element (stack: Stack<'a>) =
+    match stack with
+    | Stack [] -> Stack [ element ]
+    | Stack list -> Stack(element :: list)
+
+let pop stack =
+    match stack with
+    | Stack [] -> Stack []
+    | Stack list -> Stack(List.tail list)
 
 let peek stack =
     match stack with
-    | [] -> None
-    | head :: _ -> Some head
+    | Stack [] -> None
+    | Stack(head :: _) -> Some head
