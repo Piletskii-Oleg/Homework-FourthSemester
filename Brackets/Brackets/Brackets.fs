@@ -29,8 +29,8 @@ let filterElement element =
 let parse: string -> List<Symbol> =
     Seq.toList >> List.map transformElement >> List.filter filterElement
 
-let matchBracket symbol bracket func =
-    match bracket with
+let matchSymbol symbol option func =
+    match option with
     | None -> false
     | Some value when symbol = value -> func
     | _ -> false
@@ -47,9 +47,9 @@ let rec checkElements stack seq =
         | OpeningCurly
         | OpeningParentheses
         | OpeningSquare -> checkElements (push (Seq.head seq) stack) (List.tail seq)
-        | ClosingCurly -> matchBracket OpeningCurly (peek stack) (checkNext stack seq)
-        | ClosingParentheses -> matchBracket OpeningParentheses (peek stack) (checkNext stack seq)
-        | ClosingSquare -> matchBracket OpeningSquare (peek stack) (checkNext stack seq)
+        | ClosingCurly -> matchSymbol OpeningCurly (peek stack) (checkNext stack seq)
+        | ClosingParentheses -> matchSymbol OpeningParentheses (peek stack) (checkNext stack seq)
+        | ClosingSquare -> matchSymbol OpeningSquare (peek stack) (checkNext stack seq)
         | Other _ -> false
 
 let check sequence =
