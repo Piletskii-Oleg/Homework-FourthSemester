@@ -14,15 +14,14 @@ let infectChance =
     | Mac -> 0.4
 
 let random = Random()
-let generate =
-    let number = random.Next(0, 101) |> Convert.ToDouble
-    number / 100.0
+    
 
 type Computer(system: OS, isInfected: bool) =
     let mutable mIsInfected = isInfected
 
-    let tryInfect =
-        if generate > infectChance system && not mIsInfected then
+    let tryInfect () =
+        let number = random.Next(0, 101) |> Convert.ToDouble
+        if number / 100.0 < infectChance system && not mIsInfected then
             mIsInfected <- true
             printfn $"%A{system} is infected!"
 
