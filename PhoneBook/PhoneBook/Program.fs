@@ -7,7 +7,6 @@
     + "\"print\" - print everything\n"
     + "\"save\" - save current data to file\n"
 
-/// Processes user's input according to the options
 let rec processInput phoneBook =
     printf "Please input a command: "
     let input = System.Console.ReadLine()
@@ -46,7 +45,7 @@ let rec processInput phoneBook =
     | _ ->
         printfn $"%s{options}"
         processInput phoneBook
-        
+
 [<EntryPoint>]
 let main _ =
     printfn $"%s{options}"
