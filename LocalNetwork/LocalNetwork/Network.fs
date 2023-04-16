@@ -2,84 +2,90 @@
 
 open Computer
 
-type Node(computer: Computer, connections: Connections, id: int) as this =
+type Node(computer: Computer, connections: List<Edge>, id: int) as this =
+    let mutable mConnections = connections
+        
     let infectConnections () =
+        mConnections |> List.iter (fun edge -> edge.Infect)
+
+    let tryInfectConnections () =
         if computer.IsInfected then
-            connections.Infect
+            infectConnections ()
 
-    let mutable connections = connections
+    let tryInfectComputers () =
+        mConnections |> List.iter (fun edge -> edge.TryInfectComputers)
 
-    let tryConnectTo node =
-        connections.Edges
-        |> List.tryFind (fun (edge: Edge) -> edge.Connects this node)
+    let clearConnections () =
+        mConnections |> List.iter (fun edge -> edge.Clean)
+
+    let tryAdd newEdge =
+        mConnections
+        |> List.tryFind (fun edge -> edge = newEdge)
         |> function
             | None ->
-                let edge = Edge(this, node)
-                connections.Add(edge)
-                Some edge
+                mConnections <- newEdge :: mConnections
+                Some newEdge
             | Some _ -> None
 
-    let addEdge edge = connections.Add edge
+    let tryConnectTo node =
+        match node with
+        | _ when node = this -> None
+        | _ ->
+            mConnections
+            |> List.tryFind (fun edge -> edge.Connects this node)
+            |> function
+                | None ->
+                    let edge = Edge(this, node)
+                
+                    this.TryAddEdge edge |> ignore
+                    node.TryAddEdge edge |> ignore
+                
+                    Some edge
+                | Some _ -> None
 
     member _.Id = id
     member _.Computer = computer
-    member _.Connections = connections
-    member _.InfectConnections = infectConnections
-    member _.AddEdge edge = addEdge edge
+    member _.Connections = mConnections
+    member _.TryAddEdge edge = tryAdd edge
     member _.TryConnectTo node = tryConnectTo node
+    member _.TryInfectConnections = tryInfectConnections ()
+    member _.TryInfectComputers = tryInfectComputers ()
+    member _.CleanConnections = clearConnections ()
 
-    new(computer: Computer, id: int) = Node(computer, Connections [], id)
+    new(computer: Computer, id: int) = Node(computer, [], id)
 
 and Edge(start: Node, stop: Node, canInfect: bool) =
-    let mutable canInfect = canInfect
+    let mutable mCanInfect = canInfect
 
     let connects node1 node2 =
-        (start = node1 && stop = node2) || (start = node2 && stop = node1)
+        (start = node2 && stop = node1) || (start = node1 && stop = node2)
 
     member _.TryInfectComputers =
         if canInfect then
             start.Computer.TryInfect()
             stop.Computer.TryInfect()
 
-    member _.Infect = canInfect <- true
+    member _.Infect = mCanInfect <- true
 
-    member _.Clean = canInfect <- false
+    member _.Clean = mCanInfect <- false
 
-    member _.CanInfect = canInfect
+    member _.CanInfect = mCanInfect
 
     member _.Connects node1 node2 = connects node1 node2
 
-    new(start: Node, stop: Node) as this =
+    new(start: Node, stop: Node) =
         Edge(start, stop, false)
-        then
-            start.AddEdge this
-            stop.AddEdge this
-
-and Connections(edges: List<Edge>) =
-    let mutable edges = edges
-
-    let add edge = edges <- edge :: edges
-
-    member _.Edges = edges
-
-    member _.Infect = edges |> List.iter (fun edge -> edge.Infect)
-
-    member _.TryInfectComputers = edges |> List.iter (fun edge -> edge.TryInfectComputers)
-
-    member _.Clean = edges |> List.iter (fun edge -> edge.Clean)
-
-    member _.Add edge = add edge
 
 and Graph(nodes: List<Node>) =
     member _.Nodes = nodes
 
     member _.InfectConnections =
-        nodes |> List.iter (fun (node: Node) -> node.InfectConnections())
+        nodes |> List.iter (fun (node: Node) -> node.TryInfectConnections)
 
     member _.TryInfectComputers =
-        nodes |> List.iter (fun (node: Node) -> node.Connections.TryInfectComputers)
+        nodes |> List.iter (fun (node: Node) -> node.TryInfectComputers)
 
-    member _.CleanConnections = nodes |> List.iter (fun node -> node.Connections.Clean)
+    member _.CleanConnections = nodes |> List.iter (fun node -> node.CleanConnections)
 
 let step (network: Graph) =
     network.InfectConnections
