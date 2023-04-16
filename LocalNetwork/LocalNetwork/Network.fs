@@ -4,7 +4,7 @@ open Computer
 
 type Node(computer: Computer, connections: List<Edge>, id: int) as this =
     let mutable mConnections = connections
-        
+
     let infectConnections () =
         mConnections |> List.iter (fun edge -> edge.Infect)
 
@@ -18,14 +18,12 @@ type Node(computer: Computer, connections: List<Edge>, id: int) as this =
     let clearConnections () =
         mConnections |> List.iter (fun edge -> edge.Clean)
 
-    let tryAdd newEdge =
-        mConnections
-        |> List.tryFind (fun edge -> edge = newEdge)
+    let tryAdd element list =
+        list
+        |> List.contains element
         |> function
-            | None ->
-                mConnections <- newEdge :: mConnections
-                Some newEdge
-            | Some _ -> None
+            | false -> Some (element :: list)
+            | true -> None
 
     let tryConnectTo node =
         match node with
@@ -36,21 +34,28 @@ type Node(computer: Computer, connections: List<Edge>, id: int) as this =
             |> function
                 | None ->
                     let edge = Edge(this, node)
-                
+
                     this.TryAddEdge edge |> ignore
                     node.TryAddEdge edge |> ignore
-                
+
                     Some edge
                 | Some _ -> None
 
     member _.Id = id
     member _.Computer = computer
     member _.Connections = mConnections
-    member _.TryAddEdge edge = tryAdd edge
-    member _.TryConnectTo node = tryConnectTo node
-    member _.TryInfectConnections = tryInfectConnections ()
+    
+     member _.TryInfectConnections = tryInfectConnections ()
     member _.TryInfectComputers = tryInfectComputers ()
     member _.CleanConnections = clearConnections ()
+    
+    member _.TryConnectTo node = tryConnectTo node
+    member _.TryAddEdge edge =
+        match tryAdd edge mConnections with
+        | None -> None
+        | Some newList ->
+            mConnections <- newList
+            Some edge
 
     new(computer: Computer, id: int) = Node(computer, [], id)
 
@@ -73,8 +78,7 @@ and Edge(start: Node, stop: Node, canInfect: bool) =
 
     member _.Connects node1 node2 = connects node1 node2
 
-    new(start: Node, stop: Node) =
-        Edge(start, stop, false)
+    new(start: Node, stop: Node) = Edge(start, stop, false)
 
 and Graph(nodes: List<Node>) =
     member _.Nodes = nodes

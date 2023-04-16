@@ -25,12 +25,12 @@ type Computer(system: OS, isInfected: bool) =
             mIsInfected <- true
             printfn $"%A{system} is infected!"
 
-    member this.TryInfect ?chance =
+    member this.TryInfect?chance =
         match chance with
         | None -> tryInfect infectChance
         | Some newChance -> tryInfect newChance
 
-    member this.IsInfected = isInfected
+    member this.IsInfected = mIsInfected
     member this.System = system
 
     new(system: OS) = Computer(system, false)
