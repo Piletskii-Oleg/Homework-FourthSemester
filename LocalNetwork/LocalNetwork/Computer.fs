@@ -14,13 +14,13 @@ let infectChance =
     | Mac -> 0.4
 
 let random = Random()
-    
 
 type Computer(system: OS, isInfected: bool) =
     let mutable mIsInfected = isInfected
 
     let tryInfect () =
         let number = random.Next(0, 101) |> Convert.ToDouble
+
         if number / 100.0 < infectChance system && not mIsInfected then
             mIsInfected <- true
             printfn $"%A{system} is infected!"
@@ -28,3 +28,5 @@ type Computer(system: OS, isInfected: bool) =
     member this.TryInfect = tryInfect
     member this.IsInfected = isInfected
     member this.System = system
+    
+    new (system: OS) = Computer(system, false)
