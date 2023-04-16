@@ -8,25 +8,33 @@ type Node(computer: Computer, connections: Connections, id: int) as this =
             connections.Infect
 
     let mutable connections = connections
-    
-    let connectTo node =
-        match node with
-        | thisNode when thisNode = node -> ()
-        | _ -> connections.Add (Edge(this, node))
-    
+
+    let tryConnectTo node =
+        connections.Edges
+        |> List.tryFind (fun (edge: Edge) -> edge.Connects this node)
+        |> function
+            | None ->
+                let edge = Edge(this, node)
+                connections.Add(edge)
+                Some edge
+            | Some _ -> None
+
     let addEdge edge = connections.Add edge
 
     member _.Id = id
     member _.Computer = computer
     member _.Connections = connections
     member _.InfectConnections = infectConnections
-    member _.AddEdge = addEdge
-    member _.ConnectTo = connectTo
+    member _.AddEdge edge = addEdge edge
+    member _.TryConnectTo node = tryConnectTo node
 
     new(computer: Computer, id: int) = Node(computer, Connections [], id)
 
 and Edge(start: Node, stop: Node, canInfect: bool) =
     let mutable canInfect = canInfect
+
+    let connects node1 node2 =
+        (start = node1 && stop = node2) || (start = node2 && stop = node1)
 
     member _.TryInfectComputers =
         if canInfect then
@@ -37,6 +45,10 @@ and Edge(start: Node, stop: Node, canInfect: bool) =
 
     member _.Clean = canInfect <- false
 
+    member _.CanInfect = canInfect
+
+    member _.Connects node1 node2 = connects node1 node2
+
     new(start: Node, stop: Node) as this =
         Edge(start, stop, false)
         then
@@ -46,6 +58,8 @@ and Edge(start: Node, stop: Node, canInfect: bool) =
 and Connections(edges: List<Edge>) =
     let mutable edges = edges
 
+    let add edge = edges <- edge :: edges
+
     member _.Edges = edges
 
     member _.Infect = edges |> List.iter (fun edge -> edge.Infect)
@@ -54,11 +68,11 @@ and Connections(edges: List<Edge>) =
 
     member _.Clean = edges |> List.iter (fun edge -> edge.Clean)
 
-    member _.Add edge = edges <- edge :: edges
+    member _.Add edge = add edge
 
 and Graph(nodes: List<Node>) =
     member _.Nodes = nodes
-    
+
     member _.InfectConnections =
         nodes |> List.iter (fun (node: Node) -> node.InfectConnections())
 

@@ -28,5 +28,5 @@ type Computer(system: OS, isInfected: bool) =
     member this.TryInfect = tryInfect
     member this.IsInfected = isInfected
     member this.System = system
-    
-    new (system: OS) = Computer(system, false)
+
+    new(system: OS) = Computer(system, false)
