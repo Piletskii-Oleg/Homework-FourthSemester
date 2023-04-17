@@ -93,8 +93,22 @@ and Graph(nodes: List<Node>, infectChance: InfectChance) =
 
     new(nodes: List<Node>) = Graph(nodes, baseInfectChance)
 
+let logState (graph: Graph) =
+    let computers =
+        graph.Nodes
+        |> List.map (fun node -> node.Computer)
+        |> List.map (fun computer -> computer.ToString)
+
+    let computerIds =
+        graph.Nodes
+        |> List.map (fun node -> node.Id)
+        |> List.map (fun id -> id.ToString())
+
+    List.zip computerIds computers
+
 let step (network: Graph) =
     network.InfectConnections
     network.TryInfectComputers
     network.CleanConnections
+    printfn $"%A{logState network}"
     network

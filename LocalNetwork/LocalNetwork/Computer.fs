@@ -30,8 +30,9 @@ type Computer(system: OS, isInfected: bool) =
         if getRandom () / 100.0 <= infectChance system && not mIsInfected then
             infect ()
 
-    member this.TryInfect = tryInfect
-    member this.IsInfected = mIsInfected
-    member this.System = system
+    member _.TryInfect = tryInfect
+    member _.IsInfected = mIsInfected
+    member _.System = system
+    member _.ToString = $"%A{system} is infected: %b{mIsInfected}"
 
     new(system: OS) = Computer(system, false)

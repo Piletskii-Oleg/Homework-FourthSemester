@@ -10,7 +10,7 @@ let infectGuaranteed =
     | Windows -> 1.0
     | Linux -> 1.0
     | Mac -> 1.0
-    
+
 let neverInfect =
     function
     | Windows -> 0.0
@@ -148,11 +148,11 @@ let ``Cleaning connections should work correctly`` () =
     |> List.map (fun node -> node.Connections)
     |> List.map (fun edges -> edges |> List.map (fun edge -> edge.CanInfect))
     |> List.iter (fun canInfectList -> canInfectList |> List.iter (should be False))
-    
+
 [<Test>]
 let ``If the chance of infecting is 0, no computer should be infected after a step`` () =
     safeGraph |> step |> step |> step |> step |> ignore
-    
+
     safeGraph.Nodes
     |> List.filter (fun node -> not (node.Id = 1))
     |> List.map (fun node -> node.Computer)
