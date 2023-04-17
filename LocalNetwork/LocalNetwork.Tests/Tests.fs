@@ -4,21 +4,26 @@ open NUnit.Framework
 open Network
 open Computer
 open FsUnit
+open Foq
+
 
 [<SetUp>]
-let graph =
-    let node1 = Node(Computer(Windows), 1)
-    let node2 = Node(Computer(Linux, true), 2)
-    let node3 = Node(Computer(Linux), 3)
-    let node4 = Node(Computer(Mac), 4)
-    let node5 = Node(Computer(Windows), 5)
+let nodes =
+    [ Node(Computer(Windows), 1)
+      Node(Computer(Linux, true), 2)
+      Node(Computer(Linux), 3)
+      Node(Computer(Mac), 4)
+      Node(Computer(Windows), 5) ]
 
-    node1.TryConnectTo node2 |> ignore
-    node2.TryConnectTo node3 |> ignore
-    node2.TryConnectTo node4 |> ignore
-    node2.TryConnectTo node5 |> ignore
+[<SetUp>]
+let connectNodes =
+    nodes[0].TryConnectTo nodes[1] |> ignore
+    nodes[1].TryConnectTo nodes[2] |> ignore
+    nodes[1].TryConnectTo nodes[3] |> ignore
+    nodes[1].TryConnectTo nodes[4] |> ignore
 
-    Graph [ node1; node2; node3; node4; node5 ]
+[<SetUp>]
+let graph = Graph nodes
 
 [<Test>]
 let ``TryConnectTo node should work correctly`` () =
@@ -98,6 +103,18 @@ let ``Infecting connections should make all edges able to infect`` () =
     |> List.iter (fun canInfectList -> canInfectList |> List.iter (fun canInfect -> canInfect |> should be True))
 
 [<Test>]
-let ``Trying to infect computers should work correctly`` () =
-    graph.InfectConnections
-    graph.TryInfectComputers
+let ``Trying to infect computers when the chance is 1 should work correctly`` () =
+    let infectGuaranteed =
+        function
+        | Windows -> 1.0
+        | Linux -> 1.0
+        | Mac -> 1.0
+
+    let guaranteedGraph = Graph(nodes, infectGuaranteed)
+    guaranteedGraph.InfectConnections
+    guaranteedGraph.TryInfectComputers
+
+    nodes[0].Computer.IsInfected |> should be True
+    nodes[2].Computer.IsInfected |> should be True
+    nodes[3].Computer.IsInfected |> should be True
+    nodes[4].Computer.IsInfected |> should be True

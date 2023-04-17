@@ -2,6 +2,13 @@
 
 open Computer
 
+let tryAdd element list =
+    list
+    |> List.contains element
+    |> function
+        | false -> Some(element :: list)
+        | true -> None
+
 type Node(computer: Computer, connections: List<Edge>, id: int) as this =
     let mutable mConnections = connections
 
@@ -12,18 +19,11 @@ type Node(computer: Computer, connections: List<Edge>, id: int) as this =
         if computer.IsInfected then
             infectConnections ()
 
-    let tryInfectComputers () =
-        mConnections |> List.iter (fun edge -> edge.TryInfectComputers)
+    let tryInfectComputers infectChance =
+        mConnections |> List.iter (fun edge -> edge.TryInfectComputers infectChance)
 
     let clearConnections () =
         mConnections |> List.iter (fun edge -> edge.Clean)
-
-    let tryAdd element list =
-        list
-        |> List.contains element
-        |> function
-            | false -> Some (element :: list)
-            | true -> None
 
     let tryConnectTo node =
         match node with
@@ -44,12 +44,13 @@ type Node(computer: Computer, connections: List<Edge>, id: int) as this =
     member _.Id = id
     member _.Computer = computer
     member _.Connections = mConnections
-    
-     member _.TryInfectConnections = tryInfectConnections ()
-    member _.TryInfectComputers = tryInfectComputers ()
+
+    member _.TryInfectConnections = tryInfectConnections ()
+    member _.TryInfectComputers = tryInfectComputers
     member _.CleanConnections = clearConnections ()
-    
+
     member _.TryConnectTo node = tryConnectTo node
+
     member _.TryAddEdge edge =
         match tryAdd edge mConnections with
         | None -> None
@@ -65,10 +66,10 @@ and Edge(start: Node, stop: Node, canInfect: bool) =
     let connects node1 node2 =
         (start = node2 && stop = node1) || (start = node1 && stop = node2)
 
-    member _.TryInfectComputers =
-        if canInfect then
-            start.Computer.TryInfect()
-            stop.Computer.TryInfect()
+    member _.TryInfectComputers infectChance =
+        if mCanInfect then
+            start.Computer.TryInfect infectChance
+            stop.Computer.TryInfect infectChance
 
     member _.Infect = mCanInfect <- true
 
@@ -80,16 +81,17 @@ and Edge(start: Node, stop: Node, canInfect: bool) =
 
     new(start: Node, stop: Node) = Edge(start, stop, false)
 
-and Graph(nodes: List<Node>) =
+and Graph(nodes: List<Node>, infectChance: InfectChance) =
     member _.Nodes = nodes
 
-    member _.InfectConnections =
-        nodes |> List.iter (fun (node: Node) -> node.TryInfectConnections)
+    member _.InfectConnections = nodes |> List.iter (fun node -> node.TryInfectConnections)
 
     member _.TryInfectComputers =
-        nodes |> List.iter (fun (node: Node) -> node.TryInfectComputers)
+        nodes |> List.iter (fun node -> node.TryInfectComputers infectChance)
 
     member _.CleanConnections = nodes |> List.iter (fun node -> node.CleanConnections)
+
+    new(nodes: List<Node>) = Graph(nodes, baseInfectChance)
 
 let step (network: Graph) =
     network.InfectConnections
