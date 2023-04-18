@@ -13,36 +13,42 @@ let ``Calculator should be able to conduct operations with correct numbers`` () 
         let! b = "2"
         let sum = a + b
         return sum
-    } |> should equal (Some 3)
-    
+    }
+    |> should equal (Some 3)
+
     calculator {
         let! a = "12"
         let! b = "4"
         return a * b
-    } |> should equal (Some 48)
-    
+    }
+    |> should equal (Some 48)
+
     calculator {
         let! a = "12"
         let! b = "4"
         return a / b
-    } |> should equal (Some 3)
-    
+    }
+    |> should equal (Some 3)
+
     calculator {
         let! a = "12"
         let! b = "4"
         return a - b
-    } |> should equal (Some 8)
-    
+    }
+    |> should equal (Some 8)
+
 [<Test>]
 let ``Calculator should return None on incorrect input`` () =
     calculator {
         let! a = "ss"
         let! b = "2"
         return a + b
-    } |> should equal None
-    
+    }
+    |> should equal None
+
     calculator {
         let! a = "40"
         let! b = "lol"
         return a - b
-    } |> should equal None
+    }
+    |> should equal None
