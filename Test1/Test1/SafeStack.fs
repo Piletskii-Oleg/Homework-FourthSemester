@@ -9,6 +9,7 @@ type SafeStack<'a>(stack: List<'a>) =
             match mStack with
             | [] -> [ element ]
             | list -> (element :: list)
+
         mStack <- newStack
 
     let tryPop () =
@@ -20,8 +21,7 @@ type SafeStack<'a>(stack: List<'a>) =
 
     member _.Stack = mStack
 
-    member _.SafePush element =
-        lock lockObject (fun _ -> push element)
+    member _.SafePush element = lock lockObject (fun _ -> push element)
 
     member _.SafeTryPop() = lock lockObject (fun _ -> tryPop ())
     member _.UnsafePush element = push element
