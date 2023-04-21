@@ -25,7 +25,7 @@ let getRhombus n =
         [ "" ]
     else
         List.init length (fun n -> if n < length / 2 then n else length - n - 1)
-        |> List.map (fun i -> (drawLine i n) |> charListToString)
+        |> List.map (fun i -> drawLine i n |> charListToString)
 
 let drawRhombus n =
     getRhombus n |> List.iter (printfn "%s")
