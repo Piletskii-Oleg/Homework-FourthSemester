@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PowerSeries", "PowerSeries\PowerSeries.fsproj", "{F5B8A120-3E6E-4325-801E-38BBB4D5333C}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PowerSeries.Tests", "PowerSeries.Tests\PowerSeries.Tests.fsproj", "{2337687E-4DCF-48F6-9488-209208B6E67F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5B8A120-3E6E-4325-801E-38BBB4D5333C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5B8A120-3E6E-4325-801E-38BBB4D5333C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5B8A120-3E6E-4325-801E-38BBB4D5333C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5B8A120-3E6E-4325-801E-38BBB4D5333C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2337687E-4DCF-48F6-9488-209208B6E67F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2337687E-4DCF-48F6-9488-209208B6E67F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2337687E-4DCF-48F6-9488-209208B6E67F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2337687E-4DCF-48F6-9488-209208B6E67F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
