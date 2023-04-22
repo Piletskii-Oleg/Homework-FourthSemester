@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PointFree", "PointFree\PointFree.fsproj", "{E83113F3-58CD-4A60-95C5-786DB4CB0073}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PointFree.Tests", "PointFree.Tests\PointFree.Tests.fsproj", "{45BF6E80-E785-4F2B-AE50-869B18258CF7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E83113F3-58CD-4A60-95C5-786DB4CB0073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E83113F3-58CD-4A60-95C5-786DB4CB0073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E83113F3-58CD-4A60-95C5-786DB4CB0073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E83113F3-58CD-4A60-95C5-786DB4CB0073}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45BF6E80-E785-4F2B-AE50-869B18258CF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45BF6E80-E785-4F2B-AE50-869B18258CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45BF6E80-E785-4F2B-AE50-869B18258CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45BF6E80-E785-4F2B-AE50-869B18258CF7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
