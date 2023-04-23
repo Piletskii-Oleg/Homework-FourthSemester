@@ -21,33 +21,45 @@ let getSizeAsync (url: string) =
         return html.Length
     }
 
+let getTitleAsync (url: string) =
+    async {
+        let! html = getPageContentsAsync url
+        return nameRegex.Match html
+    }
+
+let matchCollectionToSeq (matches: MatchCollection) =
+    seq {
+        let i = matches.GetEnumerator() in
+
+        while i.MoveNext() do
+            yield i.Current
+    }
+
 let crawlAsync (url: string) =
     async {
         let! html = getPageContentsAsync url
         let onPageLinks = onPageLinksRegex.Matches html
-        html 
-        |> nameRegex.Matches
-        |> Seq.map (fun x -> x.Value)
-        |> Seq.iter (printfn "%s")
 
         let links =
-            seq {
-                let i = onPageLinks.GetEnumerator() in
-
-                while i.MoveNext() do
-                    yield i.Current
-            }
+            onPageLinks
+            |> matchCollectionToSeq
             |> Seq.cast<Match>
             |> Seq.map (fun x -> x.Value)
             |> Seq.map linksRegex.Match
+            |> Seq.map (fun x -> x.Value)
 
-        return! links |> Seq.map (fun x -> x.Value) |> Seq.map getSizeAsync |> Async.Parallel
+        let! titles = links |> Seq.map getTitleAsync |> Async.Parallel
+
+        titles |> Array.map string |> Array.filter (fun s -> s <> "") |> Array.iter (printfn "%s")
+
+        let! sizes = links |> Seq.map getSizeAsync |> Async.Parallel
+        return (Seq.zip links sizes)
     }
 
-let links =
-    crawlAsync "https://learn.microsoft.com/ru-ru/dotnet/standard/base-types/regular-expression-language-quick-reference"
+let sizes =
+    crawlAsync
+        "https://learn.microsoft.com/ru-ru/dotnet/standard/base-types/regular-expression-language-quick-reference"
     |> Async.RunSynchronously
+    |> Seq.toList
 
-let a = "<title>e 5 q3wqq34.</title>"
-printfn $"%A{nameRegex.Match a}"
-printfn $"%A{links}"
+printfn $"%A{sizes}"
