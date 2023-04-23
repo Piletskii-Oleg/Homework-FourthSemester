@@ -1,14 +1,18 @@
 module Lazy.Tests
 
 open System.Threading
+open NUnit.Framework
 open ILazy
 open FsUnit
-open NUnit.Framework
 
 let lazies supplier : ILazy<int> list =
     [ UnsafeLazy<int>(supplier)
       SafeLazy<int>(supplier)
       LockFreeLazy<int>(supplier) ]
+
+let runParallel<'a> amount (someLazy: ILazy<'a>) =
+    let tasks = Array.init amount (fun _ -> async { return someLazy.Get() })
+    tasks |> Async.Parallel |> Async.RunSynchronously
 
 [<Test>]
 let ``Lazies should work correctly when run sequentially`` () =
@@ -20,10 +24,6 @@ let ``Lazies should work correctly when run sequentially`` () =
         myLazy.Get() |> should equal 2
         myLazy.Get() |> should equal 2
         myLazy.Get() |> should equal 2)
-
-let runParallel<'a> amount (someLazy: ILazy<'a>) =
-    let tasks = Array.init amount (fun _ -> async { return someLazy.Get() })
-    tasks |> Async.Parallel |> Async.RunSynchronously
 
 [<Test>]
 let ``Safe Lazy should not cause races`` () =

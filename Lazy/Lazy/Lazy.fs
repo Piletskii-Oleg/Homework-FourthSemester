@@ -1,6 +1,5 @@
 ﻿module Lazy
 
-open System.Runtime.CompilerServices
 open System.Threading
 open ILazy
 
