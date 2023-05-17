@@ -11,3 +11,10 @@ let ``First 10 fibonacci numbers should be calculated correctly`` () =
 let ``N-th Fibonacci term should be calculated correctly`` () =
     fibonacci 16 |> should equal 987
     fibonacci 30 |> should equal 832040
+    
+[<Test>]
+let ``Applying function to a negative number gives -1`` () =
+    List.init 10000 (fun x -> -x)
+    |> List.tail // first element is 0
+    |> List.map fibonacci
+    |> List.iter (fun x -> x |> should equal -1L)
