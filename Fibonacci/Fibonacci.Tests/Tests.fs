@@ -17,4 +17,4 @@ let ``Applying function to a negative number gives -1`` () =
     List.init 10000 (fun x -> -x)
     |> List.tail // first element is 0
     |> List.map fibonacci
-    |> List.iter (fun x -> x |> should equal -1L)
+    |> List.iter (fun x -> x |> should equal -1)
