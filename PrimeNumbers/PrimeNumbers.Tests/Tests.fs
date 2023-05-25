@@ -11,9 +11,14 @@ let ``Prime number check should be correct`` () =
 
 [<Test>]
 let ``First values of the list should be prime numbers`` () =
-    let list = generate_primes_list |> Seq.take 40 |> Seq.toList
-    List.filter is_prime list = list |> should be True
-    
+    let primes = [ 2; 3; 5; 7; 11; 13; 17; 19; 23; 29; 31; 37; 41; 43; 47; 53; 59 ]
+
+    generate_primes_list
+    |> Seq.take (List.length primes)
+    |> should equal primes 
+
 [<Test>]
 let ``generate_prime_list and primes_list are equivalent`` () =
-    generate_primes_list |> Seq.take 100 |> Seq.compareWith Operators.compare (primes_list |> Seq.take 100) |> should equal 0
+    generate_primes_list
+    |> Seq.take 100
+    |> should equal (primes_list |> Seq.take 100)
