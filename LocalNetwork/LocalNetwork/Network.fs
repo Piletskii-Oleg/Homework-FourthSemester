@@ -26,9 +26,9 @@ type Node(computer: Computer, connections: List<Edge>, id: int) as this =
         mConnections |> List.iter (fun edge -> edge.Clean)
 
     let tryConnectTo node =
-        match node with
-        | _ when node = this -> None
-        | _ ->
+        if node = this then
+            None
+        else
             mConnections
             |> List.tryFind (fun edge -> edge.Connects this node)
             |> function
@@ -44,10 +44,11 @@ type Node(computer: Computer, connections: List<Edge>, id: int) as this =
     member _.Id = id
     member _.Computer = computer
     member _.Connections = mConnections
+    member _.IsInfected = computer.IsInfected
 
-    member _.TryInfectConnections = tryInfectConnections ()
-    member _.TryInfectComputers = tryInfectComputers
-    member _.CleanConnections = clearConnections ()
+    member _.TryInfectConnections() = tryInfectConnections ()
+    member _.TryInfectComputers infectChance = tryInfectComputers infectChance
+    member _.CleanConnections() = clearConnections ()
 
     member _.TryConnectTo node = tryConnectTo node
 
@@ -81,15 +82,24 @@ and Edge(start: Node, stop: Node, canInfect: bool) =
 
     new(start: Node, stop: Node) = Edge(start, stop, false)
 
-and Graph(nodes: List<Node>, infectChance: InfectChance) =
-    member _.Nodes = nodes
+type Graph(nodes: List<Node>, infectChance: InfectChance) =
+    let infectConnections () =
+        nodes |> List.iter (fun node -> node.TryInfectConnections())
 
-    member _.InfectConnections = nodes |> List.iter (fun node -> node.TryInfectConnections)
-
-    member _.TryInfectComputers =
+    let tryInfectComputers () =
         nodes |> List.iter (fun node -> node.TryInfectComputers infectChance)
 
-    member _.CleanConnections = nodes |> List.iter (fun node -> node.CleanConnections)
+    let cleanConnections () =
+        nodes |> List.iter (fun node -> node.CleanConnections())
+
+    member _.Nodes = nodes
+
+    member _.DoStep() =
+        infectConnections ()
+        tryInfectComputers ()
+        cleanConnections ()
+
+    member _.IsFinished = nodes |> List.forall (fun node -> node.IsInfected)
 
     new(nodes: List<Node>) = Graph(nodes, baseInfectChance)
 
@@ -107,8 +117,6 @@ let logState (graph: Graph) =
     List.zip computerIds computers
 
 let step (network: Graph) =
-    network.InfectConnections
-    network.TryInfectComputers
-    network.CleanConnections
+    network.DoStep()
     printfn $"%A{logState network}"
     network
