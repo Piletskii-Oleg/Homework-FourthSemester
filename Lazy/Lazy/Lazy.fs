@@ -16,7 +16,7 @@ type UnsafeLazy<'a>(supplier: unit -> 'a) =
     interface ILazy<'a> with
         member _.Get() = get ()
 
-type SafeLazy<'a>(supplier: unit -> 'a) =
+type BlockingLazy<'a>(supplier: unit -> 'a) =
     let lockObj = obj ()
 
     let mutable result: 'a Option = None
@@ -39,20 +39,12 @@ type LockFreeLazy<'a>(supplier: unit -> 'a) =
     let mutable result: 'a Option = None
 
     let rec get () =
-        if result.IsSome then
-            result.Value
-        else
-            let current = result
-
+        if result.IsNone then
             let calculated = Some(supplier ())
+            Interlocked.CompareExchange(&result, calculated, None) |> ignore
 
-            if
-                not
-                <| obj.ReferenceEquals(current, Interlocked.CompareExchange(&result, calculated, current))
-            then
-                get ()
-            else
-                result.Value
+        result.Value
+
 
     interface ILazy<'a> with
         member this.Get() = get ()

@@ -5,43 +5,67 @@ open NUnit.Framework
 open ILazy
 open FsUnit
 
-let lazies supplier : ILazy<int> list =
-    [ UnsafeLazy<int>(supplier)
-      SafeLazy<int>(supplier)
-      LockFreeLazy<int>(supplier) ]
+let lazies supplier : ILazy<obj> list =
+    [ UnsafeLazy<obj>(supplier)
+      BlockingLazy<obj>(supplier)
+      LockFreeLazy<obj>(supplier) ]
 
 let runParallel<'a> amount (someLazy: ILazy<'a>) =
-    let tasks = Array.init amount (fun _ -> async { return someLazy.Get() })
-    tasks |> Async.Parallel |> Async.RunSynchronously
+    Array.init amount (fun _ -> async { return someLazy.Get() }) |> Async.Parallel
 
 [<Test>]
 let ``Lazies should work correctly when run sequentially`` () =
-    let supplier = fun () -> 2
+    let supplier = fun () -> obj ()
 
     lazies supplier
     |> List.iter (fun someLazy ->
-        let myLazy: ILazy<int> = someLazy
-        myLazy.Get() |> should equal 2
-        myLazy.Get() |> should equal 2
-        myLazy.Get() |> should equal 2)
+        let myLazy: ILazy<obj> = someLazy
+        let result = myLazy.Get()
+        obj.ReferenceEquals(result, myLazy.Get()) |> should be True
+        obj.ReferenceEquals(result, myLazy.Get()) |> should be True
+        obj.ReferenceEquals(result, myLazy.Get()) |> should be True)
 
 [<Test>]
-let ``Safe Lazy should not cause races`` () =
-    let mutable count = 0
+let ``Blocking Lazy should not cause races and return the same object`` () =
+    let manualResetEvent = new ManualResetEvent false
+    let count = ref 0
 
-    let safeLazy: ILazy<unit> =
-        SafeLazy<unit>(fun () -> count <- Interlocked.Increment(ref count))
+    let supplier () =
+        manualResetEvent.WaitOne() |> ignore
+        Interlocked.Increment count |> ignore
+        obj ()
+        
+    let safeLazy: ILazy<obj> = BlockingLazy<obj>(supplier)
+    
+    let calculationsCount = 10
+    let calculations = safeLazy |> runParallel calculationsCount
+    manualResetEvent.Set() |> ignore
 
-    safeLazy |> runParallel 100000 |> ignore
+    calculations
+    |> Async.RunSynchronously
+    |> Array.pairwise
+    |> Array.map obj.ReferenceEquals
+    |> should equal (Array.init (calculationsCount - 1) (fun _ -> true))
 
-    count |> should equal 1
+    count.Value |> should equal 1
 
 [<Test>]
 let ``Lock free lazy should always return the same object`` () =
-    let lockFreeLazy: ILazy<List<int>> = LockFreeLazy<List<int>>(fun () -> [ 2; 4; 11 ])
+    let manualResetEvent = new ManualResetEvent false
 
-    lockFreeLazy
-    |> runParallel 10000
+    let supplier () =
+        manualResetEvent.WaitOne() |> ignore
+        obj ()
+
+    let someLazy: ILazy<obj> = LockFreeLazy<obj>(supplier)
+
+    let calculationsCount = 10
+    let calculations = someLazy |> runParallel calculationsCount
+
+    manualResetEvent.Set() |> ignore
+
+    calculations
+    |> Async.RunSynchronously
     |> Array.pairwise
     |> Array.map obj.ReferenceEquals
-    |> Array.iter (should be True)
+    |> should equal (Array.init (calculationsCount - 1) (fun _ -> true))
