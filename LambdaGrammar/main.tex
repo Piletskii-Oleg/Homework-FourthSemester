@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{dirtytalk}
+\usepackage{mdwtab}
+\usepackage{syntax} 
+
+\setlength{\grammarparsep}{0.25cm}   % vertical distance between production rules
+\setlength{\grammarindent}{1cm}      % horizontal indent distance
+\renewcommand{\syntleft}{}          % do not display '<' associated with variable, for example <A>
+\renewcommand{\syntright}{}         % do not display '>' associated with variable, for example <A>
+
+\title{Lambda Calculus}
+
+\begin{document}
+
+\maketitle
+
+\section{Grammar}
+\begin{grammar}
+    <term> ::= '\textbackslash' bindings '.' term
+    \alt app
+
+    <app> ::= atom
+    \alt app atom
+
+    <atom> ::= var
+    \alt '(' term ')'
+
+    <var> ::= NAME
+
+    <bindings> ::= NAME+
+
+    <NAME> ::= ['a'..'z']
+\end{grammar}
+
+
+\section{Examples}
+
+\begin{itemize}
+    \item \textbackslash x y.x:
+term =$>$ \textbackslash bindings . term =$>$ \textbackslash x y . term =$>$ \textbackslash x y . app =$>$ \textbackslash x y . atom =$>$ \textbackslash x y . var =$>$ \textbackslash x y . x
+    \item (\textbackslash x.x) (y z): 
+term =$>$\\
+app =$>$\\
+app atom =$>$\\
+atom atom =$>$\\
+(term) atom =$>$\\
+(term) (term) =$>$\\
+(\textbackslash bindings . term) (term) =$>$\\
+(\textbackslash x . term) (term) =$>$\\
+(\textbackslash x.x) (term) =$>$\\
+(\textbackslash x.x) (app) =$>$\\
+(\textbackslash x.x) (app atom) =$>$\\
+(\textbackslash x.x) (atom atom) =$>$\\
+(\textbackslash x.x) (var atom) =$>$\\
+(\textbackslash x.x) (y atom) =$>$\\
+(\textbackslash x.x) (y var) =$>$\\
+(\textbackslash x.x) (y z)
+    
+\end{itemize}
+
+\end{document}
