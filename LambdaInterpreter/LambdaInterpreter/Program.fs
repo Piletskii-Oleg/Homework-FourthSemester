@@ -1,6 +1,4 @@
-﻿module LambdaInterpreter
-
-open Microsoft.FSharp.Quotations
+﻿module Program
 
 type Term =
     | Variable of string
@@ -42,9 +40,6 @@ let rec printTerm term =
     
 printTerm a
 printfn ""
-
-let term = Application(Abstraction("x", Application(Variable("x"), Variable("y"))), Variable "a")
-printTerm term
         
 // let rec beta term1 term2 = 
 //     
