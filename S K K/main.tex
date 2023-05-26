@@ -1,0 +1,11 @@
+\documentclass{article}
+
+\begin{document}
+
+\Large$$SKK = (\lambda x\ y\ z.x\ z\ (y\ z))\ K K \rightarrow_\beta$$
+$$(\lambda y\ z.((\lambda x. \lambda y. x)\ z\ (y\ z)))\ K \rightarrow_\beta$$
+$$(\lambda y.\lambda z.(\lambda y.z)\ (y\ z)) K \rightarrow_\beta$$
+$$(\lambda y.\lambda z.z)\ K \equiv$$
+$$(\lambda y.\lambda z.z)(\lambda y.\lambda z.y) \rightarrow_\beta$$
+$$\lambda z.z \equiv I$$
+\end{document}
